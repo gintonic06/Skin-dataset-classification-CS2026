@@ -1,0 +1,25 @@
+{
+    "fecha": "2026-05-31 12:41",
+    "run_id": "030d1d3d0ca44c9e871e78c96a419e0c",
+    "resultado": {
+        "val_accuracy": 68.5083,
+        "val_loss": 0.9713,
+        "train_accuracy": 82.3529,
+        "train_loss": 0.5044,
+        "best_epoch": 28
+    },
+    "hiperparametros": {
+        "model": "MLPClassifier",
+        "input_size": 32,
+        "batch_size": 16,
+        "lr": 0.0001,
+        "optimizer": "Adam",
+        "dropout": 0.2,
+        "HFlip": 0.0,
+        "VFlip": 0.0,
+        "RBContrast": 0.0,
+        "es_patience": 5,
+        "epochs": 200,
+        "count_params": 1640201
+    }
+}
