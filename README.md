@@ -98,6 +98,7 @@ Se entrenaron los 5 mejores conjuntos de hiperparámetros de forma individual co
 | 3 | 55.56% | 0.001  | Adam | 0.0 | 16  | 64 | 15 |
 
 **Observación sobre las curvas de entrenamiento:** 
+
 **Train accuracy:**
 Todos los modelos suben consistentemente. Todos aprenden bien del train, con distintas velocidades según lr y batch_size.
 ![](Img_resultados/train_curve.webp)
@@ -107,11 +108,10 @@ Sube hasta el pico y luego cae o se estabiliza. La caída posterior al pico es l
 Baja inicialmente pero después empieza a subir en varios modelos, confirmando el overfitting.
 ![](Img_resultados/val_curve.webp)
 
-
 **Observación sobre las matrices de confusión:** 
+Vemos que las clases con mejor clasificación son Benign keratosis y Vascular lesion. Por otro lado, Actinic keratosis se confunde con otras, y Melanoma se confunde con Melanocytic nevus.
 ![](Img_resultados/matriz.webp)
 
-Vemos que las clases con mejor clasificación son Benign keratosis y Vascular lesion. Por otro lado, Actinic keratosis se confunde con otras, y Melanoma se confunde con Melanocytic nevus.
 ---
 
 ## 6. Limitaciones y Conclusiones
