@@ -38,7 +38,7 @@ La primera búsqueda de hiperparámetros se ejecutó con el dataset original (co
 La segunda búsqueda, realizada después de redistribuir correctamente las imágenes duplicadas, mostró resultados considerablemente más bajos pero más honestos:
 
 | Experimento | Mejor val_accuracy |
-|---|---|---|
+|---|---|
 | Con data leakage (dataset original) | 68.51% |
 | Sin data leakage (dataset corregido) | 59.44% |
 
@@ -110,6 +110,7 @@ Baja inicialmente pero después empieza a subir en varios modelos, confirmando e
 
 **Observación sobre las matrices de confusión:** 
 ![](Img_resultados/matriz.webp)
+
 Vemos que las clases con mejor clasificación son Benign keratosis y Vascular lesion. Por otro lado, Actinic keratosis se confunde con otras, y Melanoma se confunde con Melanocytic nevus.
 ---
 
