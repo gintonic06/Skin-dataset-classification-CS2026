@@ -1,4 +1,4 @@
-# Análisis de Búsqueda de Hiperparámetros
+# Análisis de Búsqueda de Hiperparámetros MLP
 **Clasificación de Lesiones de Piel — MLP Classifier**  
 Experimento: `Clasificador_Imagenes` | MLflow Experiment ID: 2
 
@@ -127,3 +127,100 @@ Vemos que las clases con mejor clasificación son Benign keratosis y Vascular le
 - La augmentación de datos no aportó mejoras.
 - El data leakage infló los resultados y fue corregido redistribuyendo las imágenes.
 - Los logs completos de todos los runs están disponibles en el directorio `mlruns/` (Experiment ID: 2) y pueden visualizarse.
+
+
+# Análisis de Búsqueda de Hiperparámetros CNN
+**Clasificación de Lesiones de Piel — CNN Classifier**  
+
+## 1. Experimento
+
+Se implementó una red neuronal convolucional (CNN) inspirada en arquitecturas clásicas para clasificación de imágenes, incorporando capas convolucionales, max pooling, batch normalization y dropout. Se realizó una búsqueda de hiperparámetros utilizando MLflow para registrar métricas y configuraciones.
+
+### 1.1 Espacio de Hiperparámetros Explorado
+
+| Hiperparámetro | Valores explorados |
+|---|---|
+| input_size | 64, 128 |
+| batch_size | 32, 64, 128 |
+| lr | 0.0001, 0.0002, 0.0005, 0.001 |
+| optimizer | Adam, SGD |
+| dropout | 0.2, 0.3, 0.4 |
+| HorizontalFlip | 0.0, 0.5 |
+| VerticalFlip | 0.0 |
+| RandomBrightnessContrast | 0.0, 0.3, 0.5 |
+| weight_decay | 0.0, 1e-5, 1e-4 |
+| epochs | 120 (con early stopping, patience=12) |
+
+---
+
+## 2. Resultados
+
+La CNN obtuvo resultados superiores a los observados con el MLP. Los mejores modelos alcanzaron un accuracy de validación de aproximadamente **61.11%**.
+
+### Top modelos encontrados
+
+| val_acc (%) | input | batch | lr | dropout | optimizer |
+|---|---|---|---|---|---|
+| 61.11 | 64 | 128 | 0.0005 | 0.3 | Adam |
+| 61.11 | 64 | 64 | 0.0001 | 0.3 | Adam |
+| 61.11 | 64 | 128 | 0.001 | 0.4 | Adam |
+| 60.00 | 64 | 128 | 0.001 | 0.2 | Adam |
+
+---
+
+## 3. Análisis de Patrones
+
+A partir de los mejores runs registrados se observaron los siguientes comportamientos:
+
+- **Optimizer:** Adam superó consistentemente a SGD. Los mejores resultados fueron obtenidos exclusivamente con Adam.
+- **Input size:** Las imágenes redimensionadas a 64x64 píxeles obtuvieron mejores resultados que las de 128x128.
+- **Dropout:** Los mejores modelos utilizaron valores entre 0.3 y 0.4, indicando que una regularización moderada ayuda a reducir el overfitting.
+- **Batch size:** Los mejores resultados se observaron con batch sizes de 64 y 128.
+- **Data augmentation:** RandomBrightnessContrast mostró mejoras en algunos de los mejores runs, aunque su efecto fue menor que el de otros hiperparámetros.
+- **Learning rate:** Los mejores modelos se encontraron entre 1e-4 y 1e-3, sin una diferencia marcada entre estos valores.
+
+---
+
+## 4. Comparación con MLP
+
+| Modelo | Mejor val_accuracy |
+|---|---|
+| MLP | 59.44% |
+| CNN | 61.11% |
+
+La CNN logró una mejora respecto al MLP, confirmando la utilidad de las capas convolucionales para capturar patrones espaciales presentes en las imágenes dermatológicas.
+
+---
+
+## 5. Observaciones
+
+Durante el entrenamiento se observó overfitting en varios modelos. Algunos alcanzaron accuracies de entrenamiento superiores al 90%, mientras que el accuracy de validación permaneció cercano al 60%.
+
+El uso de dropout, batch normalization y early stopping permitió reducir parcialmente este efecto y mejorar la capacidad de generalización del modelo.
+
+Asimismo, se observó que los modelos con mayor accuracy de entrenamiento no necesariamente obtenían los mejores resultados de validación, lo que evidencia la importancia de utilizar métricas de validación para seleccionar hiperparámetros.
+
+---
+
+## 6. Conclusiones
+
+- La CNN superó el rendimiento obtenido por el MLP en el conjunto de validación.
+- Adam fue claramente superior a SGD para este problema.
+- Las mejores configuraciones utilizaron imágenes de 64x64 píxeles.
+- Los valores de dropout entre 0.3 y 0.4 ofrecieron el mejor equilibrio entre aprendizaje y generalización.
+- El accuracy máximo alcanzado fue de **61.11%**.
+- El principal desafío continúa siendo la limitada capacidad de generalización debido al tamaño reducido del dataset y al desbalance entre clases.
+- Las técnicas de regularización implementadas (dropout, batch normalization y early stopping) resultaron fundamentales para controlar el sobreajuste.
+
+## 7. AlexNet
+
+AlexNet es una de las arquitecturas de redes neuronales convolucionales (CNN) más influyentes. La arquitectura original está compuesta por cinco capas convolucionales seguidas de tres capas completamente conectadas. Entre sus principales contribuciones se encuentran el uso de funciones de activación ReLU, capas de Max Pooling, técnicas de regularización mediante Dropout y el entrenamiento sobre GPU, lo que permitió entrenar modelos mucho más profundos que los utilizados hasta ese momento.
+
+
+## 8. Transfer Learning (No Implementado)
+
+Como parte del bonus propuesto por la consigna, se consideró la posibilidad de utilizar Transfer Learning.
+
+Esta técnica consiste en reutilizar modelos previamente entrenados sobre grandes bases de imágenes (por ejemplo ImageNet), tales como ResNet, EfficientNet o la propia AlexNet. En lugar de entrenar toda la red desde cero, se aprovechan las características visuales aprendidas por estos modelos y se reemplazan únicamente las últimas capas para adaptarlas al problema específico de clasificación de lesiones dermatológicas.
+
+Es esperable que una estrategia de Transfer Learning permita obtener accuracies superiores, especialmente cuando se dispone de una cantidad limitada de imágenes de entrenamiento.
